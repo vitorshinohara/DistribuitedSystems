@@ -72,7 +72,6 @@ class TaskThreadSvEx3 extends Thread {
                 gui.setText(dado); /* Recebe dados */
 
                 sendMsgsSockets(dado);
-                System.out.println(dado);
                 String[] partes = dado.split(" ");
 
                 switch (partes[1]) {
@@ -96,15 +95,19 @@ class TaskThreadSvEx3 extends Thread {
 
                     case "FILES":
                         dado = "";
-                        File dir = new File(".");
+                        File dir = new File(partes[2]);
                         File[] filesList = dir.listFiles();
                         String cabecalho = "[Servidor]: \n"
                                 + "=-=-=-=-=-= FILES =-=-=-=-=-=\n";
-                        for (File file : filesList) {
-                            if (file.isFile()) {
-                                dado = dado + "-> " + file.getName() + "\n";
-                            }
+                        try {
+                            for (File file : filesList) {
+                                if (file.isFile()) {
+                                    dado = dado + "-> " + file.getName() + "\n";
+                                }
 
+                            }
+                        } catch (Exception e) {
+                            System.out.println("Erro ao encontrar diretório");
                         }
                         String rodape = "=-=-=-=-= END FILES =-=-=-=-=\n";
                         dado = cabecalho + dado + rodape;
@@ -116,8 +119,12 @@ class TaskThreadSvEx3 extends Thread {
                     case "DOWN":
                         break;
 
-                    default:
-                        System.out.println("teste");
+                    case "EXIT":
+                        out.writeUTF("/sair");
+                        this.in.close();
+                        this.out.close();
+                        this.interrupt(); /* FECHA TUDO */
+
                         break;
 
                 }

@@ -35,7 +35,7 @@ class TaskThreadEx2 extends Thread {
 
     public TaskThreadEx2(GUIClient gui, Socket aClientSocket) {
         this.gui = gui;
-        
+
         try {
             clientSocket = aClientSocket;
             in = new DataInputStream(clientSocket.getInputStream()); /* Configurar outputStream para ler do socket */
@@ -55,7 +55,11 @@ class TaskThreadEx2 extends Thread {
             while (true) {
 
                 String data = in.readUTF();
-                this.gui.setText(data);
+                if (data.equals("/sair")) {
+                    gui.disableBotoes();
+                } else {
+                    this.gui.setText(data);
+                }
 
             } /* While */
 

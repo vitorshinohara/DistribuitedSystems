@@ -34,6 +34,15 @@ public class GUIClient extends javax.swing.JFrame {
         textaMsgs.append(msg + "\n");
     }
 
+    public void disableBotoes() {
+        btnConectar.setEnabled(true);
+        textfApelido.setEnabled(true);
+        textfIP.setEnabled(true);
+        textfPorta.setEnabled(true);
+        textfSend.setEnabled(false);
+        btnEnviar.setEnabled(false);
+    }
+
     /**
      * This method is called from within the constructor to initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is always
@@ -167,6 +176,10 @@ public class GUIClient extends javax.swing.JFrame {
             textfApelido.setEnabled(false);
             textfIP.setEnabled(false);
             textfPorta.setEnabled(false);
+
+            textfSend.setEnabled(true);
+            btnEnviar.setEnabled(true);
+            
         } catch (IOException ex) {
             System.out.println("Erro ao conectar. Tente novamente");
         }
@@ -177,8 +190,11 @@ public class GUIClient extends javax.swing.JFrame {
         String msg = textfSend.getText();
         try {
             out.writeUTF(apelido + msg); /* Envia a mensagem para o servidor */
+
             textfSend.setText(""); /* Limpa a barra de mensagem */
+
             textfSend.requestFocus(); /* Seta o foco */
+
         } catch (IOException ex) {
             Logger.getLogger(GUIClient.class.getName()).log(Level.SEVERE, null, ex);
         }
