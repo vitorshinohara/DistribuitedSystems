@@ -66,6 +66,7 @@ class TaskThreadSvEx3 extends Thread {
                 String data = in.readUTF();   /* aguarda o envio de dados */
 
                 gui.setText(data); /* Recebe dados */
+                sendMsgsSockets(data);
 
             } /* While */
 
@@ -82,7 +83,6 @@ class TaskThreadSvEx3 extends Thread {
             for (int i = 0; i < this.listaSockets.size(); i++) {
                 Socket iterator = listaSockets.get(i);
                 DataOutputStream out = new DataOutputStream(iterator.getOutputStream()); /* Configurar outputStream para escrita no socket */
-
                 out.writeUTF(msg);
             }
         } catch (Exception e) {

@@ -20,44 +20,25 @@ import java.util.Scanner;
  */
 public class TCPClientEx03 {
 
-    public static void main(String args[]) {
-        /* args[0]: mensagem  e args[1]: ip do servidor */
-        //String ipServidor = args[1];
-        String ipServidor = "127.0.0.1";
-        int serverPort = 7896;   /* especifica a porta */
+    public static void comecar(GUIClient gui, Socket s) {
 
-        Socket s = null;
-        try {
-
-            s = new Socket(ipServidor, serverPort);  /* conecta com o servidor */
-
-            TaskThreadEx2 c = new TaskThreadEx2(s);
-
-        } catch (UnknownHostException e) {
-            System.out.println("Socket:" + e.getMessage());
-        } catch (EOFException e) {
-            System.out.println("EOF:" + e.getMessage());
-        } catch (IOException e) {
-            System.out.println("leitura:" + e.getMessage());
-        } //catch
+        TaskThreadEx2 c = new TaskThreadEx2(gui, s);
 
     } //main
-
 } //class TCPClient
 
 class TaskThreadEx2 extends Thread {
 
     DataInputStream in;
-    DataOutputStream out;
     Socket clientSocket;
-    
+    GUIClient gui;
 
-    public TaskThreadEx2(Socket aClientSocket) {
+    public TaskThreadEx2(GUIClient gui, Socket aClientSocket) {
+        this.gui = gui;
+        
         try {
             clientSocket = aClientSocket;
             in = new DataInputStream(clientSocket.getInputStream()); /* Configurar outputStream para ler do socket */
-
-            out = new DataOutputStream(clientSocket.getOutputStream()); /* Configurar outputStream para escrita no socket */
 
             this.start();  /* inicializa a thread */
 
@@ -74,19 +55,8 @@ class TaskThreadEx2 extends Thread {
         try {
             while (true) {
 
-                String entrada = scanner.nextLine();
-                out.writeUTF(entrada);      	//é envia uma string para o servidor
-
-                System.out.println("Informacao enviada.");
                 String data = in.readUTF();
-                System.out.println(data);
-
-                if (data.equals("ACKSAIR")) {
-                    in.close();
-                    out.close();
-                    clientSocket.close();   //finaliza a conexao
-                    break;
-                }
+                this.gui.setText(data);
 
             } /* While */
 
