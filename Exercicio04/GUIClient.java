@@ -3,7 +3,7 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package Exercicio03;
+package Exercicio04;
 
 import java.io.DataOutputStream;
 import java.io.IOException;
@@ -161,7 +161,7 @@ public class GUIClient extends javax.swing.JFrame {
             this.s = new Socket(ip, porta);
             this.out = new DataOutputStream(this.s.getOutputStream()); /* Configurar outputStream para escrita no socket */
 
-            TCPClientEx03 client = new TCPClientEx03();
+            TCPClientEx04 client = new TCPClientEx04();
             client.comecar(this, this.s);
             btnConectar.setEnabled(false);
             textfApelido.setEnabled(false);
@@ -170,7 +170,6 @@ public class GUIClient extends javax.swing.JFrame {
         } catch (IOException ex) {
             System.out.println("Erro ao conectar. Tente novamente");
         }
-
 
     }//GEN-LAST:event_btnConectarActionPerformed
 
