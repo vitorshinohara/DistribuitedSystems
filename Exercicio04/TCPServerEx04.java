@@ -9,7 +9,6 @@ import java.net.ServerSocket;
 import java.net.Socket;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -22,12 +21,10 @@ public class TCPServerEx04 {
 
     public void comecar(GUIServer guiServer) {
 
-        ArrayList<Socket> listaSockets = new ArrayList();
-
         int serverPort = guiServer.getPorta(); // porta do servidor
             /* cria um socket e mapeia a porta para aguardar conexao */
 
-        ListenerThread listenerThread = new ListenerThread(listaSockets, serverPort, guiServer);
+        ListenerThread listenerThread = new ListenerThread(serverPort, guiServer);
 
     } //main
 } //class
@@ -36,17 +33,15 @@ public class TCPServerEx04 {
  * Classe TaskThread: Thread responsavel pela comunicacao Descricao: Rebebe um
  * socket, cria os objetos de leitura e escrita e aguarda msgs clientes
  */
-class TaskThreadSvEx3 extends Thread {
+class TaskThreadSvEx4 extends Thread {
 
     DataInputStream in;
     DataOutputStream out;
     Socket clientSocket;
     GUIServer gui;
-    ArrayList<Socket> listaSockets;
 
-    public TaskThreadSvEx3(Socket aClientSocket, GUIServer gui, ArrayList<Socket> listaSockets) {
+    public TaskThreadSvEx4(Socket aClientSocket, GUIServer gui) {
         this.gui = gui;
-        this.listaSockets = listaSockets;
         try {
             this.clientSocket = aClientSocket;
             in = new DataInputStream(clientSocket.getInputStream()); /* Configurar outputStream para ler do socket */
@@ -62,6 +57,7 @@ class TaskThreadSvEx3 extends Thread {
 
     /* metodo executado ao iniciar a thread - start() */
     /* Metodo executado quando a thread e iniciada */
+    @Override
     public void run() {
 
         try {
@@ -71,7 +67,9 @@ class TaskThreadSvEx3 extends Thread {
 
                 gui.setText(dado); /* Recebe dados */
 
-                sendMsgsSockets(dado);
+
+                out.writeUTF(dado);
+
                 String[] partes = dado.split(" ");
 
                 switch (partes[1]) {
@@ -79,7 +77,7 @@ class TaskThreadSvEx3 extends Thread {
                         DateFormat timeFormat = new SimpleDateFormat("HH:mm:ss");
                         Date time = new Date();
                         dado = "[Servidor]: Hora local: " + timeFormat.format(time);
-                        sendMsgsSockets(dado);
+                        out.writeUTF(dado);
                         gui.setText(dado);
 
                         break;
@@ -88,32 +86,28 @@ class TaskThreadSvEx3 extends Thread {
                         DateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy");
                         Date date = new Date();
                         dado = "[Servidor]: Data local: " + dateFormat.format(date);
-                        sendMsgsSockets(dado);
+                        out.writeUTF(dado);
                         gui.setText(dado);
 
                         break;
 
                     case "FILES":
-                        dado = "";
                         File dir = new File(partes[2]);
                         File[] filesList = dir.listFiles();
-                        String cabecalho = "[Servidor]: \n"
-                                + "=-=-=-=-=-= FILES =-=-=-=-=-=\n";
+                        int tam = filesList.length;
                         try {
                             for (File file : filesList) {
                                 if (file.isFile()) {
-                                    dado = dado + "-> " + file.getName() + "\n";
+                                    dado = file.getName() + "\n";
+                                    out.writeUTF(dado);
+                                    gui.setText(dado);
                                 }
 
                             }
                         } catch (Exception e) {
                             System.out.println("Erro ao encontrar diretório");
                         }
-                        String rodape = "=-=-=-=-= END FILES =-=-=-=-=\n";
-                        dado = cabecalho + dado + rodape;
 
-                        sendMsgsSockets(dado);
-                        gui.setText(dado);
                         break;
 
                     case "DOWN":
@@ -139,35 +133,20 @@ class TaskThreadSvEx3 extends Thread {
 
     } //run
 
-    public void sendMsgsSockets(String msg) {
-        try {
-            for (int i = 0; i < this.listaSockets.size(); i++) {
-                Socket iterator = listaSockets.get(i);
-                DataOutputStream out = new DataOutputStream(iterator.getOutputStream()); /* Configurar outputStream para escrita no socket */
-
-                out.writeUTF(msg);
-            }
-        } catch (Exception e) {
-            System.out.println("Erro " + e);
-        }
-
-    }
-
 } //class
 
 class ListenerThread extends Thread {
 
-    private ArrayList<Socket> listaSockets;
-    private int serverPort;
-    private GUIServer guiServer;
+    private final int serverPort;
+    private final GUIServer guiServer;
 
-    public ListenerThread(ArrayList<Socket> listaSockets, int serverPort, GUIServer guiServer) {
-        this.listaSockets = listaSockets;
+    public ListenerThread(int serverPort, GUIServer guiServer) {
         this.serverPort = serverPort;
         this.guiServer = guiServer;
         this.start();
     }
 
+    @Override
     public void run() {
         /* aguarda conexoes */
         try {
@@ -177,10 +156,8 @@ class ListenerThread extends Thread {
 
                 clientSocket = listenSocket.accept();
 
-                listaSockets.add(clientSocket); /* Adiciona um socket na lista de clientes */
-
                 /* cria um thread para atender a conexao */
-                TaskThreadSvEx3 c = new TaskThreadSvEx3(clientSocket, guiServer, listaSockets);
+                TaskThreadSvEx4 c = new TaskThreadSvEx4(clientSocket, guiServer);
             }
         } catch (IOException ex) {
             Logger.getLogger(ListenerThread.class.getName()).log(Level.SEVERE, null, ex);

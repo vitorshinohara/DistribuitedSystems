@@ -48,6 +48,8 @@ public class GUIServer extends javax.swing.JFrame {
         textaMsg.setColumns(20);
         textaMsg.setRows(5);
         jScrollPane1.setViewportView(textaMsg);
+        textaMsg.getAccessibleContext().setAccessibleName("Log");
+        textaMsg.getAccessibleContext().setAccessibleDescription("");
 
         textfPorta.setText("7896");
         textfPorta.addActionListener(new java.awt.event.ActionListener() {

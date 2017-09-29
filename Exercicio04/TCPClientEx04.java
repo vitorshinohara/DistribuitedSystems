@@ -6,13 +6,9 @@
 package Exercicio04;
 
 import java.io.DataInputStream;
-import java.io.DataOutputStream;
 import java.io.EOFException;
 import java.io.IOException;
-import java.net.ServerSocket;
 import java.net.Socket;
-import java.net.UnknownHostException;
-import java.util.Scanner;
 
 /**
  *
@@ -22,18 +18,18 @@ public class TCPClientEx04 {
 
     public static void comecar(GUIClient gui, Socket s) {
 
-        TaskThreadEx2 c = new TaskThreadEx2(gui, s);
+        TaskThreadEx4 c = new TaskThreadEx4(gui, s);
 
     } //main
 } //class TCPClient
 
-class TaskThreadEx2 extends Thread {
+class TaskThreadEx4 extends Thread {
 
     DataInputStream in;
     Socket clientSocket;
     GUIClient gui;
 
-    public TaskThreadEx2(GUIClient gui, Socket aClientSocket) {
+    public TaskThreadEx4(GUIClient gui, Socket aClientSocket) {
         this.gui = gui;
 
         try {
@@ -49,6 +45,7 @@ class TaskThreadEx2 extends Thread {
 
     /* metodo executado ao iniciar a thread - start() */
     /* Metodo executado quando a thread e iniciada */
+    @Override
     public void run() {
 
         try {
