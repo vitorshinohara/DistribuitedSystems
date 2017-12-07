@@ -1,0 +1,23 @@
+INSTALL
+------
+
+pip install grpcio
+pip install grpcio-tools
+
+------------------------
+
+Como já temos a interface do programa definida (arquivo .proto), não é necessário realizar a compilação do mesmo.
+
+1. Execução
+	1.1 Para executar o projeto, devemos primeiramente iniciar o servidor através do comando:
+	python greeter_server.py
+	1.2 Após o servidor sendo executado, devemos executar o cliente através do comando:
+	python greeter_client.py
+
+2. Bibliotecas utilizadas
+	2.1. GRPC
+	2.2. time
+
+3. Exemplos de uso:
+	3.1. Para o cliente:
+		3.1.1. Devemos seguir o modelo da linha 44 do arquivo greeter_client.py, trocando apenas a mensagem por strings de seu interesse.

@@ -1,0 +1,28 @@
+// Copyright 2015, Google Inc.
+// All rights reserved.
+
+
+syntax = "proto3";
+
+// interface de serviço
+service Greeter {
+  rpc AdicionarContato (Contato) returns (Boleano) {}
+  rpc RemoverContato (Contato) returns (Boleano) {}
+  rpc ListarContatos (Request) returns (stream Contato) {} 
+
+}
+
+message Request{
+	string desc = 1;
+}
+
+// mensagem de solicitação
+
+message Contato {
+	string nome = 1;
+	string telefone = 2;
+}
+
+message Boleano {
+	string flag = 1;
+}
